@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const PORT = 3000;
 var fs = require('fs');
 
+const db = require("./src/config/db"); //db
+
 const home = require("./src/routes/home"); // 라우팅
 
 app.set("views", "./src/views");
@@ -22,45 +24,38 @@ var template = require('./src/views/home/template.js');
 app.get("/data/:id", (request, response) => {
   var next = request.params.id;
   console.log(next);
-  var data = fs.readFileSync(`data/${next}`,'utf-8');
-  console.log(data);
-  var title = 'Smart Backpack - Data';
-  var html = template.DATA(title, data, next);
-  response.send(html);
+  var sql = 'SELECT contents FROM community WHERE title = ?;';
+  db.query(sql,next,function(err,results,fields){
+    if(err) console.log(err);
+    const data = results.map(item=>item.contents);
+    console.log(data[0])
+    var title = 'Smart Backpack - Data';
+    var html = template.DATA(title, data[0], next);
+    response.send(html);
+  })
 })
 
-
-
-
-
 app.get('/board', function(request, response){
-    fs.readdir('./data', function(error, filelist){
-      var title = 'Smart Backpack - Board';
-      //console.log(filelist);
+  var sql = 'SELECT title FROM community;';
+  db.query(sql, function(err, filelist, fields){  
+    var title = 'Smart Backpack - Board';
+    if(err) console.log(err);
+    const titleArr = filelist.map(item=>item.title);
+    var list = template.list(titleArr);
 
-      var list = template.list(filelist);
-      var html = template.BOARD(title, list);
-      response.send(html);
-    });
-  });
-
-
-
-//추가함
-app.get('/write', function(request, response){
-  fs.readdir('./data', function(error, filelist){
-    var title = 'Smart Backpack - Write';
-    //console.log(filelist);
-
-    var list = template.list(filelist);
-    var html = template.WRITE(title);
+    var html = template.BOARD(title, list);
     response.send(html);
   });
 });
 
+//추가함
+app.get('/write', function(request, response){
 
+   var title = 'Smart Backpack - Write';
 
-
+    var html = template.WRITE(title);
+    response.send(html);
+});
 
 
 app.use(express.static(`${__dirname}/src/public`));
@@ -74,11 +69,12 @@ app.post('/create_process', (req, res) => {
     console.log(post);
     var name = post.name;
     var message = post.message;
-    console.log(name);
-    console.log(message);
-    fs.writeFile(`data/${name}.txt`, message, 'utf8', function(err){
-        res.redirect('/board');
-    }); 
+
+    var sql = 'INSERT INTO community(title, contents) VALUES(?, ?);';
+    db.query(sql,  [name, message], function(err, fields){  
+      if(err) console.log(err);
+      res.redirect('/board');
+    });
 });
 
 module.exports = app;
