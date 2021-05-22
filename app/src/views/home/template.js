@@ -1,5 +1,5 @@
 module.exports = {
-    HTML1:function(title, list){
+    BOARD:function(title, list){
       return `
       <!doctype html>
       <html>
@@ -17,10 +17,8 @@ module.exports = {
 	    		canvas{
 	    			position: absolute;
     			}
-          table, th, td {
-          }
           .jb-th-1 {
-            width: 50px;
+            width: 5%;
           }
     		</style>
       </head>
@@ -42,12 +40,17 @@ module.exports = {
             <!-- Three -->
             <section id="three" class="wrapper style1 fullscreen fade-up">
               <div class="inner">
-                <h2>Community</h2>
+                <div style="float: left; width: 90%;">
+                  <h2>Community</h2>
+                </div>
+                <div style="float: right; width: 10%;">
                   <section>
                     <ul class="contact">
                       <li><a href="/write" class="button">글쓰기</a></li>
                   </section>
-                  
+                </div>
+                
+                <div>
                   <table>
                     <thead>
                       <tr>
@@ -60,8 +63,9 @@ module.exports = {
 
                   <section>
                     <ul class="contact">
-                      <li><a href="/front" class="button">메인페이지</a></li>
+                      <center><li><a href="/front" class="button">메인페이지</a></li></center>
                   </section>
+                </div>
               </div>
             </section>
         </div>
@@ -87,7 +91,7 @@ module.exports = {
       </body>
       </html>
       `;
-    }, HTML2:function(title){
+    }, WRITE:function(title){
       return `
       <!doctype html>
       <html>
@@ -141,11 +145,11 @@ module.exports = {
                         </div>
                         <div class="field">
                           <label for="message">내용</label>
-                          <textarea name="message" id="message" rows="5" placeholder="Contain your study time"></textarea>
+                          <textarea name="message" id="message" rows="12" placeholder="Contain your study time"></textarea>
                         </div>
                       </div>
                       <ul class="actions">
-                        <li><class="button"><input type = "submit"></class=></li>
+                        <li><class="button"><input type = "submit"></class></li>
                       </ul>
                     </form>
                   </section>
@@ -175,7 +179,7 @@ module.exports = {
       </body>
       </html>
       `;
-    }, HTML3:function(title, content, name){
+    }, DATA:function(title, content, name){
       return `
       <!doctype html>
       <html>
@@ -195,15 +199,25 @@ module.exports = {
           }
           table, th, td {
           }
-          .jb-th-1 {
-            width: 100px;
+          .td-color{
+            background-color: rgba(255, 255, 255, 0.05);
+          }     
+          .comment_writer {
+            margin-top: 1px;     
+            margin-bottom: 1px;
+            text-indent: 10pt;
           }
-          .jb-th-2 {
-            width: 50px;
+          .comment_content{
+            margin-top: 1px;     
+            margin-bottom: 1px;
+            text-indent: 20pt;
           }
-          .jb-td-1{
-            height: 600px;
-            vertical-align: top;
+          .comment_date { 
+            font-size: small; 
+            color: gray;
+            margin-top: 4px;
+            margin-bottom: 1px;
+            text-indent: 10pt;
           }
 
         </style>
@@ -229,23 +243,54 @@ module.exports = {
                 <table>
                     <thead>
                       <tr>
-                        <th class="jb-th-1" scope="col">제목</th>
+                        <th width="100px" scope="col">제목</th>
                         <th scope="col">${name}</th>
-                        <th class="jb-th-1">조회수</th>
-                        <th class="jb-th-2">0</th>
+                        <th width="100px">조회수</th>
+                        <th width="50px">0</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td class="jb-td-1">내용</td>
-                        <td class="jb-td-1" colspan="3"><pre>${content}</pre></td>
+                        <td height="600px" verticle-align="top">내용</td>
+                        <td height="600px" verticle-align="top" colspan="3"><pre>${content}</pre></td>
                       </tr>
                     </tbody>
                   </table>
+                  
+                  <div>
+                    <h4>댓글</h4>
+                    <div style="float: left; width: 85%;">
+                      <input type="text" name="nickname" id="nickname" placeholder="닉네임"/>
+                      <textarea name="comment" id="comment" rows="2" placeholder="댓글 작성"></textarea>
+                    </div>
+                    <div style="float: left; padding-top:40px; padding-left: 15px; width: 13%;">
+                      <ul class="contact">
+                        <li><a href="/board" class="button">댓글등록</a></li>
+                    </div>
+                  </div>
+
+                  <div>
+                    <br><br><br><br><hr>
+                    <section>
+                      <form action="/create_process" method="post">
+                        <div class="field">
+                          <table>
+                            <tr>
+                              <td class="td-color" colspan="2">
+                                <p class="comment_writer"><b>작성자</b></p>
+                                <p class="comment_content">댓글 내용</p>
+                                <p class="comment_date">시간</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                    </section>
+                  </div>
+                    
 
                   <section>
                     <ul class="contact">
-                      <li><a href="/board" class="button">게시판</a></li>
+                      <center><li><a href="/board" class="button">게시판</a></li></center>
                   </section>
               </div>
             </section>
@@ -272,7 +317,7 @@ module.exports = {
       </body>
       </html>
       `;
-    },list:function(filelist){
+    }, list:function(filelist){
       var list = '<tbody>';
       var i = 0;
       var j = 0;

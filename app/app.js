@@ -30,7 +30,7 @@ app.get("/data/:id", (request, response) => {
     const data = results.map(item=>item.contents);
     console.log(data[0])
     var title = 'Smart Backpack - Data';
-    var html = template.HTML3(title, data[0], next);
+    var html = template.DATA(title, data[0], next);
     response.send(html);
   })
 })
@@ -43,7 +43,7 @@ app.get('/board', function(request, response){
     const titleArr = filelist.map(item=>item.title);
     var list = template.list(titleArr);
 
-    var html = template.HTML1(title, list);
+    var html = template.BOARD(title, list);
     response.send(html);
   });
 });
@@ -53,7 +53,7 @@ app.get('/write', function(request, response){
 
    var title = 'Smart Backpack - Write';
 
-    var html = template.HTML2(title);
+    var html = template.WRITE(title);
     response.send(html);
 });
 
@@ -64,19 +64,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/" , home); // use -> 미들 웨어를 등록 해주는 메서드.
 
-
 app.post('/create_process', (req, res) => {
     var post = req.body;
     console.log(post);
     var name = post.name;
     var message = post.message;
- 
+
     var sql = 'INSERT INTO community(title, contents) VALUES(?, ?);';
     db.query(sql,  [name, message], function(err, fields){  
       if(err) console.log(err);
       res.redirect('/board');
     });
-  
 });
 
 module.exports = app;
