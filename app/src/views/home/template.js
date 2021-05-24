@@ -151,10 +151,10 @@ module.exports = {
                       </div>
                     </div>
                     <ul class="actions">
-                      <li><class="button"><input type = "submit"></class></li>
-                    </ul>
-                  </form>
-                </section>
+                       <li><class="button"><input type = "submit", value = "글작성"></class></li>
+                     </ul>
+                   </form>
+                 </section>
               </div>
             </div>
           </section>
@@ -181,7 +181,7 @@ module.exports = {
     </body>
     </html>
     `;
-  }, DATA:function(title, content, date, hit, name){ //수정함 원래는 date없음
+  }, DATA:function(title, content, date, hit, name, list){ //수정함 원래는 date없음 + list추가
     return `
     <!doctype html>
     <html>
@@ -224,7 +224,7 @@ module.exports = {
 
       </style>
     </head>
-
+    
     <body class="is-preload">
       <!-- Sidebar -->
         <section id="sidebar">
@@ -270,7 +270,7 @@ module.exports = {
                     </div>
                     <div style="float: left; padding-top:40px; padding-left: 15px; width: 13%;">
                       <ul class="contact">
-                        <li><class="button"><input type = "submit"></class></li>
+                        <li><class="button"><input type = "submit", value = "등록"></class></li>
                     </div>
                   </form>
                 </div>
@@ -280,15 +280,7 @@ module.exports = {
                   <section>
                     <form action="/create_process" method="post">
                       <div class="field">
-                        <table>
-                          <tr>
-                            <td class="td-color" colspan="2">
-                              <p class="comment_writer"><b>작성자</b></p>
-                              <p class="comment_content">댓글 내용</p>
-                              <p class="comment_date">시간</p>
-                            </td>
-                          </tr>
-                        </table>
+                        ${list}
                       </div>
                   </section>
                 </div>
@@ -329,17 +321,35 @@ module.exports = {
     var j = 0;
     var No = 0;
     // console.log(filelist);
-
+    
     while(j < filelist.length){
       j = j+1;
     }
-
+    
     while(i < filelist.length){
-      No = j-i
+      No = j-i;
       list = list + `<tr><td><center>${No}</center></td><td><a href="/data/${filelist[i]}">${filelist[i]}</a></td><td><center>${datelist[i]}</center></td><td><center>${hitlist[i]}</center></td></tr>`;
       i = i + 1;
     }
-    list = list+'</tbody>';
-    return list;
-  }, 
+     list = list+'</tbody>';
+     return list;
+   }, commentList:function(filelist, id){ //댓글------------------------------------------------------------
+     var cL = '<table>';
+     var i = 0;
+     var fs = require('fs');
+
+     console.log("comment list: ",filelist);
+
+     //writer: 닉네임, filelist[i]: 댓글내용
+     while(i < filelist.length){
+       const writer = fs.readFileSync(`./data/${id}/${filelist[i]}`, 'utf8');
+
+       cL = cL + '<tr><td class="td-color" colspan="2">'
+       cL = cL + `<p class="comment_writer"><b>${writer}</b></p><p class="comment_content">${filelist[i]}</p><p class="comment_date">2021-01-01</p>`;
+       cL = cL + '</td></tr>'
+       i = i + 1;
+     }
+     cL = cL + '</table>';
+     return cL;
+   }
 }
