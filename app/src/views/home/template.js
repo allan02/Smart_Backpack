@@ -55,7 +55,9 @@ module.exports = {
                     <thead>
                       <tr>
                         <th class="jb-th-1" scope="col">No</th>
-                        <th scope="col">제목</th>
+                        <th scope="col"><center>제목</center></th>
+                        <th width="200px"><center>날짜</center></th>
+                        <th width="100px"><center>조회수</center></th>
                       </tr>
                     </thead>
                       ${list}
@@ -140,8 +142,8 @@ module.exports = {
                           <input type="text" name="name" id="name" />
                         </div>
                         <div class="field half">
-                          <label for="email">닉네임</label>
-                          <input type="text" name="email" id="email" />
+                          <label for="nickname">닉네임</label>
+                          <input type="text" name="nickname" id="nickname" />
                         </div>
                         <div class="field">
                           <label for="message">내용</label>
@@ -243,8 +245,10 @@ module.exports = {
                 <table>
                     <thead>
                       <tr>
-                        <th width="100px" scope="col">제목</th>
+                        <th width="70px" scope="col">제목</th>
                         <th scope="col">${name}</th>
+                        <th width="70px" scope="col">날짜</th>
+                        <th width="150px" scope="col">2021-01-01</th>
                         <th width="100px">조회수</th>
                         <th width="50px">0</th>
                       </tr>
@@ -252,21 +256,23 @@ module.exports = {
                     <tbody>
                       <tr>
                         <td height="600px" verticle-align="top">내용</td>
-                        <td height="600px" verticle-align="top" colspan="3"><pre>${content}</pre></td>
+                        <td height="600px" verticle-align="top" colspan="5"><pre>${content}</pre></td>
                       </tr>
                     </tbody>
                   </table>
                   
                   <div>
-                    <h4>댓글</h4>
-                    <div style="float: left; width: 85%;">
-                      <input type="text" name="nickname" id="nickname" placeholder="닉네임"/>
-                      <textarea name="comment" id="comment" rows="2" placeholder="댓글 작성"></textarea>
-                    </div>
-                    <div style="float: left; padding-top:40px; padding-left: 15px; width: 13%;">
-                      <ul class="contact">
-                        <li><a href="/board" class="button">댓글등록</a></li>
-                    </div>
+                    <form action="/create_process2" method="post">
+                      <h4>댓글</h4>
+                      <div style="float: left; width: 85%;">
+                        <input type="text" name="nickname" id="nickname" placeholder="닉네임"/>
+                        <textarea name="comment" id="comment" rows="2" placeholder="댓글 작성"></textarea>
+                      </div>
+                      <div style="float: left; padding-top:40px; padding-left: 15px; width: 13%;">
+                        <ul class="contact">
+                          <li><class="button"><input type = "submit"></class></li>
+                      </div>
+                    </form>
                   </div>
 
                   <div>
@@ -330,7 +336,7 @@ module.exports = {
 
       while(i < filelist.length){
         No = j-i
-        list = list + `<tr><td>${No}</td><td><a href="/data/${filelist[i]}">${filelist[i]}</a></tr>`;
+        list = list + `<tr><td><center>${No}</center></td><td><a href="/data/${filelist[i]}">${filelist[i]}</a></td><td><center>2021-01-01</center></td><td><center>0</center></td></tr>`;
         i = i + 1;
       }
       list = list+'</tbody>';

@@ -77,6 +77,19 @@ app.post('/create_process', (req, res) => {
     });
 });
 
+//댓글
+app.post('/create_process2', (req, res) => {
+  var post = req.body;
+  console.log(post);
+  var name = post.name;
+  var message = post.message;
+  console.log(name);
+  console.log(message);
+  fs.writeFile(`data/${name}.txt`, message, 'utf8', function(err){
+    res.redirect(`/board`);
+  })
+})
+
 module.exports = app;
 
 
