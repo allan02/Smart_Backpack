@@ -23,26 +23,35 @@ var template = require('./src/views/home/template.js');
 
 app.get("/data/:id", (request, response) => {
   var next = request.params.id;
-  console.log(next);
-  var sql = 'SELECT contents FROM community WHERE title = ?;';
+  // console.log(next);
+  var sql = 'SELECT contents, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, count FROM community WHERE title = ?;';
+  db.query('UPDATE community set count = count+1 WHERE title = ?;',next,function(err,results,fields){
+    if(err) console.log(err);
+    })
   db.query(sql,next,function(err,results,fields){
     if(err) console.log(err);
     const data = results.map(item=>item.contents);
-    console.log(data[0])
+    const date = results.map(item=>item.date);
+    const hit = results.map(item=>item.count);
+    // console.log(hit[0]);
+    // console.log(data[0]);
+    // console.log(date[0]);
     var title = 'Smart Backpack - Data';
-    var html = template.DATA(title, data[0], next);
+    var html = template.DATA(title, data[0],date[0], hit[0], next);
     response.send(html);
   })
 })
 
+
 app.get('/board', function(request, response){
-  var sql = 'SELECT title FROM community;';
+  var sql = 'SELECT title, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, count FROM community;';
   db.query(sql, function(err, filelist, fields){  
     var title = 'Smart Backpack - Board';
     if(err) console.log(err);
     const titleArr = filelist.map(item=>item.title);
-    var list = template.list(titleArr);
-
+    const dateArr = filelist.map(item=>item.date);
+    const hitArr = filelist.map(item=>item.count);
+    var list = template.list(titleArr,dateArr,hitArr);
     var html = template.BOARD(title, list);
     response.send(html);
   });
@@ -71,7 +80,7 @@ app.post('/create_process', (req, res) => {
     var message = post.message;
 
     var sql = 'INSERT INTO community(title, contents) VALUES(?, ?);';
-    db.query(sql,  [name, message], function(err, fields){  
+    db.query(sql, [name, message], function(err, fields){  
       if(err) console.log(err);
       res.redirect('/board');
     });
@@ -91,5 +100,4 @@ app.post('/create_process2', (req, res) => {
 })
 
 module.exports = app;
-
 
