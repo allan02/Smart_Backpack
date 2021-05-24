@@ -68,14 +68,16 @@ app.get("/data/:id", (request, response) => {
   })
 })
 
+
 app.get('/board', function(request, response){
-  var sql = 'SELECT title FROM community;';
+  var sql = 'SELECT title, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, count FROM community;';
   db.query(sql, function(err, filelist, fields){  
     var title = 'Smart Backpack - Board';
     if(err) console.log(err);
     const titleArr = filelist.map(item=>item.title);
-    var list = template.list(titleArr);
-
+    const dateArr = filelist.map(item=>item.date);
+    const hitArr = filelist.map(item=>item.count);
+    var list = template.list(titleArr,dateArr,hitArr);
     var html = template.BOARD(title, list);
     response.send(html);
   });
@@ -104,12 +106,11 @@ app.post('/create_process', (req, res) => {
     var message = post.message;
 
     var sql = 'INSERT INTO community(title, contents) VALUES(?, ?);';
-    db.query(sql,  [name, message], function(err, fields){  
+    db.query(sql, [name, message], function(err, fields){  
       if(err) console.log(err);
       res.redirect('/board');
     });
 });
 
 module.exports = app;
-
 
