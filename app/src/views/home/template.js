@@ -259,7 +259,7 @@ module.exports = {
                       <td height="600px" verticle-align="top" colspan="5"><pre>${content}</pre></td>
                     </tr>
                   </tbody>
-                </table>
+              </table>
                 
                 <div>
                   <form action="/create_process2" method="post">
