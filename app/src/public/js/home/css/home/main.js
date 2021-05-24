@@ -25,6 +25,18 @@ var app = http.createServer(function(request,response){
       });
     }
 
+    //댓글
+    if (pathname === '/create_process2'){
+      var body = '';
+      request.on('data', function(data){
+        body = body += data;
+      });
+      request.on('end', function(){
+        var post = qs.parse(body)
+        console.log(post)
+      });
+    }
+
     response.writeHead(200);
     response.end(fs.readFileSync(__dirname + _url));
     //console.log(__dirname + _url)
