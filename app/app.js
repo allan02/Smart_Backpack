@@ -26,7 +26,6 @@ var template = require('./src/views/home/template.js');
 
 app.get("/data/:id", (request, response) => {
   var next = request.params.id;
-  console.log("id: ", next);
   setid = next
 
   //----------------댓글------------------
@@ -56,13 +55,23 @@ app.get("/data/:id", (request, response) => {
   })
   //---------------------------------------
   
-  var sql = 'SELECT contents FROM community WHERE title = ?;';
+  var sql = 'SELECT contents, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, count FROM community WHERE title = ?;';
+  db.query('UPDATE community set count = count+1 WHERE title = ?;',next,function(err,results,fields){
+    if(err) console.log(err);
+  })
+    
   db.query(sql,next,function(err,results,fields){
     if(err) console.log(err);
     const data = results.map(item=>item.contents);
-    console.log("내용: ",data[0])
+    const date = results.map(item=>item.date);
+    const hit = results.map(item=>item.count);
+
+    // console.log(hit[0]);
+    // console.log(data[0]);
+    // console.log(date[0]);
+
     var title = 'Smart Backpack - Data';
-    var html = template.DATA(title, data[0], next, commentList);
+    var html = template.DATA(title, data[0], date[0], hit[0], next, commentList);
     response.send(html);
     setid = next;
   })
