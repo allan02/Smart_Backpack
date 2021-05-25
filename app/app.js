@@ -31,29 +31,26 @@ app.get("/data/:id", (request, response) => {
   //----------------댓글------------------
   app.post('/create_process2', (req, res) => {
     var post = req.body;
-    console.log(post);
     var nickname = post.nickname; //닉네임
     var comment = post.comment; //댓글 내용
-    console.log(nickname);
-    console.log(comment);
 
-    //글쓰기때랑 동일합니당
-    fs.writeFile(`data/${setid}/${comment}.txt`, nickname, 'utf8', function(err){
-      res.redirect('data/'+setid);
+    var sql = 'INSERT INTO comments(post, name, contents) VALUES(?, ?, ?);';
+    db.query(sql, [next, nickname, comment], function(err, fields){
+      if(err) console.log(err);
+            res.redirect('data/'+setid);
     })
   })
 
-  //글 이름으로 폴더 만들기 ex)data/test1
-  if(!fs.existsSync(`data/${next}`)){
-    fs.mkdirSync(`data/${next}`);
-  }
 
-  //게시판때 불러왔던 거랑 동일합니당
-  fs.readdir(`./data/${next}`,function(error, filelist){
-    if(error) console.log(error);
-    commentList = template.commentList(filelist, next);
+  var sql = 'SELECT name, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, contents FROM comments WHERE post = ?;';
+  db.query(sql,setid, function(err, filelist, fields){
+    if(err) console.log(err);
+    const nameArr = filelist.map(item=>item.name);
+    const dateArr = filelist.map(item=>item.date);
+    const contentsArr = filelist.map(item=>item.contents);
+    commentList = template.commentList(nameArr,dateArr,contentsArr,next);
   })
-  //---------------------------------------
+  
   
   var sql = 'SELECT contents, DATE_FORMAT(in_date,"%Y-%m-%d")AS date, count FROM community WHERE title = ?;';
   db.query('UPDATE community set count = count+1 WHERE title = ?;',next,function(err,results,fields){
@@ -65,10 +62,6 @@ app.get("/data/:id", (request, response) => {
     const data = results.map(item=>item.contents);
     const date = results.map(item=>item.date);
     const hit = results.map(item=>item.count);
-
-    // console.log(hit[0]);
-    // console.log(data[0]);
-    // console.log(date[0]);
 
     var title = 'Smart Backpack - Data';
     var html = template.DATA(title, data[0], date[0], hit[0], next, commentList);

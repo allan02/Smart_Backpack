@@ -333,19 +333,19 @@ module.exports = {
     }
      list = list+'</tbody>';
      return list;
-   }, commentList:function(filelist, id){ //댓글------------------------------------------------------------
+   }, commentList:function(nameArr,dateArr,contentsArr,next){ //댓글------------------------------------------------------------
      var cL = '<table>';
      var i = 0;
      var fs = require('fs');
 
-     console.log("comment list: ",filelist);
+     console.log("comment list: ",contentsArr);
 
      //writer: 닉네임, filelist[i]: 댓글내용
-     while(i < filelist.length){
-       const writer = fs.readFileSync(`./data/${id}/${filelist[i]}`, 'utf8');
+     while(i < contentsArr.length){
+       //const writer = fs.readFileSync(`./data/${id}/${filelist[i]}`, 'utf8');
 
        cL = cL + '<tr><td class="td-color" colspan="2">'
-       cL = cL + `<p class="comment_writer"><b>${writer}</b></p><p class="comment_content">${filelist[i]}</p><p class="comment_date">2021-01-01</p>`;
+       cL = cL + `<p class="comment_writer"><b>${nameArr[i]}</b></p><p class="comment_content">${contentsArr[i]}</p><p class="comment_date">${dateArr[i]}</p>`;
        cL = cL + '</td></tr>'
        i = i + 1;
      }
