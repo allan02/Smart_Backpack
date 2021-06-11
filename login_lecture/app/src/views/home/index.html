@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Smart Backpack</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="js/home/css/home/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="js/home/css/home/assets/css/noscript.css"/></noscript>
+		
+		<script defer src="js/home/css/home/assets/css/face-api.min.js"></script>
+		<script defer src="js/home/css/home/assets/css/opencv.js"></script>
+		
+		<style>
+			canvas{
+				position: absolute;
+			}
+
+		</style>
+
+	
+	
+	
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">Welcome</a></li>
+							<li><a href="#one">opencv</a></li>
+							<li><a href="#two">Bulletin Board</a></li>
+							<li><a href="#three">submitting</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Smart Backpack</h1>
+							<p>언택트 시대 효율적인 집중을 위한 나침반<br>
+								Smart Backpack과 함께하세요.
+							</p>
+							<ul class="actions">
+								<li><a href="#one" class="button scrolly">OpenCV</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- One -->
+					<section id="one" class="wrapper style2 spotlights">
+						<section>
+							<div class="content">
+								<div class="inner">
+									<h2>OpenCV</h2>
+									<p>여러분의 집중도를 AI가 자동으로 측정해서 기록해 줄 거예요.</p>
+									<!-- <ul class="actions"> -->
+										<!-- <li><a href="js/home/css/home/generic.html" class="button">Learn more</a></li> -->
+									</ul>
+								</div>
+							</div>
+						</section>
+					
+						<section>
+							<div class="content">
+								<div class="inner">
+									<section id="stopWrap">
+										<section class="stop-wrapper text-center">
+										  <h3>StudyTime</h3>
+										  <p id="stop-full-record">
+											<span id="minutes">00</span>:<span id="seconds">00</span>:<span
+											  id="mseconds"
+											  >00</span
+											>
+										  </p>
+										  <button id="btnStart" class="btn btn-primary">Start</button>
+										  <button id="btnStop" class="btn btn-primary">Stop</button>
+										  <button id="btnReset" class="btn btn-primary">Reset</button>
+										</section>
+										<ul id="stop-record"></ul>
+									  </section>
+									<img id="image"/>
+			<script src="socket.io/socket.io.js"></script>
+			<script>
+	  var stopFullRecord = document.getElementById("stop-full-record");
+var minutes = 00;
+var seconds = 00;
+var mseconds = 00;
+var minutesText = document.getElementById("minutes");
+var secondsText = document.getElementById("seconds");
+var msecondsText = document.getElementById("mseconds");
+var btnStart = document.getElementById("btnStart");
+var btnStop = document.getElementById("btnStop");
+var btnReset = document.getElementById("btnReset");
+var recordUl = document.getElementById("stop-record");
+var Interval;
+var checkStartbtn = 2;
+
+btnStart.addEventListener("click", function () {
+	start();
+  });
+  function start() {
+	  checkStartbtn = 1;
+	clearInterval(Interval);
+	Interval = setInterval(startTimer, 10);
+  }
+  
+  btnStop.onclick = function () {
+	stop();
+	checkStartbtn = 2;
+  };
+  function stop() {
+	checkStartbtn = 0;
+	clearInterval(Interval);
+  }
+  
+
+btnReset.onclick = function () {
+	checkStartbtn = 2;
+  clearInterval(Interval);
+  mseconds = "00";
+  seconds = "00";
+  msecondsText.innerHTML = mseconds;
+  secondsText.innerHTML = seconds;
+  recordUl.innerHTML = "";
+};
+
+function startTimer() {
+  mseconds++;
+  if (mseconds < 9) {
+    msecondsText.innerHTML = "0" + mseconds;
+  }
+  if (mseconds > 9) {
+    msecondsText.innerHTML = mseconds;
+  }
+  if (mseconds > 99) {
+    seconds++;
+    secondsText.innerHTML = "0" + seconds;
+    mseconds = 0;
+    mseconds.innerHTML = "0" + 0;
+  }
+  if (seconds > 9) {
+    secondsText.innerHTML = seconds;
+  }
+  if (seconds > 59) {
+    minutes++;
+    minutesText.innerHTML = "0" + minutesText;
+    seconds = 0;
+    seconds.innerHTML = "0" + 0;
+  }
+}
+
+	/*opencv 부분!!*/	
+	var socket = io.connect("http://localhost:3000");
+	socket.on("frame", function (data) {
+	  // Reference: http://stackoverflow.com/questions/24107378/socket-io-began-to-support-binary-stream-from-1-0-is-there-a-complete-example-e/24124966#24124966
+	  var uint8Arr = new Uint8Array(data.buffer);
+	  if(data.motionx>=200 && data.motionx < 300 && checkStartbtn==0){
+		  start();
+	  }
+	  else if(data.motionx< 200 || data.motionx >300){
+		  if(checkStartbtn==1)
+		  stop();
+	  }
+	  //console.log("dddd");
+
+	  var str = new Uint8Array(data.buffer).reduce(function (data, byte) {
+		return data + String.fromCharCode(byte);
+	  }, "");
+	  var base64String = btoa(str);
+	  //console.log("xxx");
+	  var img = document.getElementById("image");
+	  img.src = "data:image/png;base64," + base64String;
+	});
+	/*opencv 부분!!*/	
+			  </script>
+
+										</div>
+							</div>
+						</section>
+					</section>
+
+				<!-- Two -->
+					<section id="two" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>What we do</h2>
+							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+							<div class="features">
+								<section>
+									<span class="icon solid major fa-code"></span>
+									<h3>Lorem ipsum amet</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-lock"></span>
+									<h3>Aliquam sed nullam</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-cog"></span>
+									<h3>Sed erat ullam corper</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-desktop"></span>
+									<h3>Veroeros quis lorem</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-link"></span>
+									<h3>Urna quis bibendum</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon major fa-gem"></span>
+									<h3>Aliquam urna dapibus</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+							</div>
+							<ul class="actions">
+								<li><a href="js/home/css/home/generic.html" class="button">Learn more</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Three -->
+				<section id="three" class="wrapper style1 fade-up">
+					<div class="inner">
+						<h2>Community</h2>
+						<p>오늘 공부 시간은 만족스러우신가요?<br>
+							여러분들의 일상을 나눠보세요.</p>
+						<section>
+							<ul class="contact">
+								<li><a href="/board" class="button">게시판</a></li>
+						</section>
+					</div>
+				</section>
+
+			</div>
+			
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+		
+		
+			<script src="js/home/css/home/assets/js/jquery.min.js"></script>
+			<script src="js/home/css/home/assets/js/jquery.scrollex.min.js"></script>
+			<script src="js/home/css/home/assets/js/jquery.scrolly.min.js"></script>
+			<script src="js/home/css/home/assets/js/browser.min.js"></script>
+			<script src="js/home/css/home/assets/js/breakpoints.min.js"></script>
+			<script src="js/home/css/home/assets/js/util.js"></script>
+			<script src="js/home/css/home/assets/js/main.js"></script>
+
+	</body>
+</html>
