@@ -35,7 +35,7 @@
 ![image](https://user-images.githubusercontent.com/70877497/121805516-8a207900-cc86-11eb-9fb8-f837e2d11867.png)
 <br>
 ### Scenario3: Use a bulletin board(community)
-![image](https://user-images.githubusercontent.com/70877497/121805522-94427780-cc86-11eb-8edb-2860bd961bde.png)
+![image](https://user-images.githubusercontent.com/70877497/121805522-94427780-cc86-11eb-8edb-2860bd961bde.png) 
 
 <br><br>
 ## 👀 PREVIEW
